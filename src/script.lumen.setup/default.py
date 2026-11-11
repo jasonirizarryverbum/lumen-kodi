@@ -135,12 +135,28 @@ def trakt_rows_work():
     return major >= 6
 
 
+def use_trakt_provider():
+    """TMDb Helper 6 can sync with several services and asks which one to use
+    the first time each Trakt row loads. Answer for it, leaving any choice the
+    user has already made alone."""
+    try:
+        addon = xbmcaddon.Addon(TMDBH)
+        for capability in ("watched", "watchlist", "collection", "scrobbling"):
+            setting = "sync_provider_" + capability
+            if not addon.getSetting(setting):
+                addon.setSetting(setting, "trakt")
+    except Exception:
+        pass
+
+
 def sync_trakt_rows():
     """Show the Trakt home rows only while TMDb Helper holds a Trakt sign-in."""
     if xbmc.getSkinDir() != SKIN_ID:
         return
     want = trakt_connected() and trakt_rows_work()
-    have = bool(xbmc.getCondVisibility("Skin.HasSetting(lumen_trakt)"))
+    if want:
+        use_trakt_provider()
+    have =bool(xbmc.getCondVisibility("Skin.HasSetting(lumen_trakt)"))
     if want != have:
         xbmc.executebuiltin("Skin.SetBool(lumen_trakt)" if want else "Skin.Reset(lumen_trakt)")
         xbmc.executebuiltin("ReloadSkin()")
