@@ -420,6 +420,87 @@
 						<param name="scrollbar_id" value="8010"/>
 					</include>
 				</control>
+				<control type="group" id="18000">
+					<visible>String.IsEqual(Container(9000).ListItem.Property(id),apps)</visible>
+					<include content="Visible_Right_Delayed">
+						<param name="id" value="apps"/>
+					</include>
+					<control type="label">
+						<left>56</left>
+						<top>82</top>
+						<width>800</width>
+						<height>40</height>
+						<font>font14</font>
+						<label>Apps on this device</label>
+					</control>
+					<control type="panel" id="18001">
+						<left>88</left>
+						<top>140</top>
+						<right>60</right>
+						<bottom>20</bottom>
+						<onleft>9000</onleft>
+						<onright>18001</onright>
+						<onup>18001</onup>
+						<ondown>18001</ondown>
+						<orientation>vertical</orientation>
+						<scrolltime tween="cubic" easing="out">400</scrolltime>
+						<itemlayout width="240" height="240">
+							<control type="image">
+								<left>8</left>
+								<top>8</top>
+								<width>224</width>
+								<height>224</height>
+								<texture colordiffuse="661A1E2B">colors/white.png</texture>
+							</control>
+							<control type="image">
+								<left>60</left>
+								<top>28</top>
+								<width>120</width>
+								<height>120</height>
+								<aspectratio>keep</aspectratio>
+								<texture fallback="DefaultAddon.png">$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<left>16</left>
+								<top>160</top>
+								<width>208</width>
+								<height>60</height>
+								<align>center</align>
+								<aligny>center</aligny>
+								<font>font12</font>
+								<label>$INFO[ListItem.Label]</label>
+							</control>
+						</itemlayout>
+						<focusedlayout width="240" height="240">
+							<control type="image">
+								<left>8</left>
+								<top>8</top>
+								<width>224</width>
+								<height>224</height>
+								<texture colordiffuse="button_focus">colors/white.png</texture>
+							</control>
+							<control type="image">
+								<left>60</left>
+								<top>28</top>
+								<width>120</width>
+								<height>120</height>
+								<aspectratio>keep</aspectratio>
+								<texture fallback="DefaultAddon.png">$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<left>16</left>
+								<top>160</top>
+								<width>208</width>
+								<height>60</height>
+								<align>center</align>
+								<aligny>center</aligny>
+								<font>font12</font>
+								<label>$INFO[ListItem.Label]</label>
+							</control>
+						</focusedlayout>
+						<content sortby="label" target="programs">androidapp://sources/apps/</content>
+					</control>
+				</control>
 				<control type="group" id="11000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),video)</visible>
 					<include content="Visible_Right_Delayed">
@@ -1080,6 +1161,14 @@
 							<thumb>icons/sidemenu/games.png</thumb>
 							<property name="id">games</property>
 							<visible>System.GetBool(gamesgeneral.enable) + !Skin.HasSetting(HomeMenuNoGamesButton)</visible>
+						</item>
+						<item>
+							<label>Apps</label>
+							<property name="menu_id">$NUMBER[18000]</property>
+							<onclick>SetFocus(18000)</onclick>
+							<thumb>icons/sidemenu/android.png</thumb>
+							<property name="id">apps</property>
+							<visible>System.Platform.Android</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[24001]</label>

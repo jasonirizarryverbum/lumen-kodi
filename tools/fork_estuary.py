@@ -16,14 +16,14 @@ from lumen_art import write_logo  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.8"
+VERSION = "0.9.9"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.8"/>
+		<import addon="script.lumen.setup" version="0.9.9"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -170,6 +170,74 @@ TOUCH_ARROWS = (
 )
 
 
+def _app_tile(focused):
+    back = (
+        '\t\t\t\t\t\t\t<control type="image">\n'
+        "\t\t\t\t\t\t\t\t<left>8</left>\n\t\t\t\t\t\t\t\t<top>8</top>\n"
+        "\t\t\t\t\t\t\t\t<width>224</width>\n\t\t\t\t\t\t\t\t<height>224</height>\n"
+        '\t\t\t\t\t\t\t\t<texture colordiffuse="%s">colors/white.png</texture>\n'
+        "\t\t\t\t\t\t\t</control>\n"
+    ) % ("button_focus" if focused else "661A1E2B")
+    return (
+        back
+        + '\t\t\t\t\t\t\t<control type="image">\n'
+        "\t\t\t\t\t\t\t\t<left>60</left>\n\t\t\t\t\t\t\t\t<top>28</top>\n"
+        "\t\t\t\t\t\t\t\t<width>120</width>\n\t\t\t\t\t\t\t\t<height>120</height>\n"
+        "\t\t\t\t\t\t\t\t<aspectratio>keep</aspectratio>\n"
+        '\t\t\t\t\t\t\t\t<texture fallback="DefaultAddon.png">$INFO[ListItem.Icon]</texture>\n'
+        "\t\t\t\t\t\t\t</control>\n"
+        '\t\t\t\t\t\t\t<control type="label">\n'
+        "\t\t\t\t\t\t\t\t<left>16</left>\n\t\t\t\t\t\t\t\t<top>160</top>\n"
+        "\t\t\t\t\t\t\t\t<width>208</width>\n\t\t\t\t\t\t\t\t<height>60</height>\n"
+        "\t\t\t\t\t\t\t\t<align>center</align>\n\t\t\t\t\t\t\t\t<aligny>center</aligny>\n"
+        "\t\t\t\t\t\t\t\t<font>font12</font>\n"
+        "\t\t\t\t\t\t\t\t<label>$INFO[ListItem.Label]</label>\n"
+        "\t\t\t\t\t\t\t</control>\n"
+    )
+
+
+APPS_SECTION = (
+    '\t\t\t\t<control type="group" id="18000">\n'
+    "\t\t\t\t\t<visible>String.IsEqual(Container(9000).ListItem.Property(id),apps)</visible>\n"
+    '\t\t\t\t\t<include content="Visible_Right_Delayed">\n'
+    '\t\t\t\t\t\t<param name="id" value="apps"/>\n'
+    "\t\t\t\t\t</include>\n"
+    '\t\t\t\t\t<control type="label">\n'
+    "\t\t\t\t\t\t<left>56</left>\n\t\t\t\t\t\t<top>82</top>\n"
+    "\t\t\t\t\t\t<width>800</width>\n\t\t\t\t\t\t<height>40</height>\n"
+    "\t\t\t\t\t\t<font>font14</font>\n"
+    "\t\t\t\t\t\t<label>Apps on this device</label>\n"
+    "\t\t\t\t\t</control>\n"
+    '\t\t\t\t\t<control type="panel" id="18001">\n'
+    "\t\t\t\t\t\t<left>88</left>\n\t\t\t\t\t\t<top>140</top>\n"
+    "\t\t\t\t\t\t<right>60</right>\n\t\t\t\t\t\t<bottom>20</bottom>\n"
+    "\t\t\t\t\t\t<onleft>9000</onleft>\n\t\t\t\t\t\t<onright>18001</onright>\n"
+    "\t\t\t\t\t\t<onup>18001</onup>\n\t\t\t\t\t\t<ondown>18001</ondown>\n"
+    "\t\t\t\t\t\t<orientation>vertical</orientation>\n"
+    '\t\t\t\t\t\t<scrolltime tween="cubic" easing="out">400</scrolltime>\n'
+    '\t\t\t\t\t\t<itemlayout width="240" height="240">\n'
+    + _app_tile(False)
+    + "\t\t\t\t\t\t</itemlayout>\n"
+    '\t\t\t\t\t\t<focusedlayout width="240" height="240">\n'
+    + _app_tile(True)
+    + "\t\t\t\t\t\t</focusedlayout>\n"
+    '\t\t\t\t\t\t<content sortby="label" target="programs">androidapp://sources/apps/</content>\n'
+    "\t\t\t\t\t</control>\n"
+    "\t\t\t\t</control>\n"
+)
+
+APPS_MENU_ITEM = (
+    "\t\t\t\t\t\t<item>\n"
+    "\t\t\t\t\t\t\t<label>Apps</label>\n"
+    '\t\t\t\t\t\t\t<property name="menu_id">$NUMBER[18000]</property>\n'
+    "\t\t\t\t\t\t\t<onclick>SetFocus(18000)</onclick>\n"
+    "\t\t\t\t\t\t\t<thumb>icons/sidemenu/android.png</thumb>\n"
+    '\t\t\t\t\t\t\t<property name="id">apps</property>\n'
+    "\t\t\t\t\t\t\t<visible>System.Platform.Android</visible>\n"
+    "\t\t\t\t\t\t</item>\n"
+)
+
+
 def sub_once(pattern, repl, text, flags=0):
     new, n = re.subn(pattern, repl, text, count=1, flags=flags)
     if n != 1:
@@ -273,6 +341,19 @@ def patch_home(text):
     )
     if n != 2:
         raise SystemExit("patch did not apply: empty-library menu clicks")
+
+    # 8. "Apps": every launchable Android app on the device, as a grid, so the
+    #    other streaming apps start from the same home screen.
+    text = sub_once(
+        r'(\t\t\t\t<control type="group" id="11000">\n)',
+        lambda m: APPS_SECTION + m.group(1),
+        text,
+    )
+    text = sub_once(
+        r"(\t\t\t\t\t\t<item>\n\t\t\t\t\t\t\t<label>\$LOCALIZE\[24001\]</label>)",
+        lambda m: APPS_MENU_ITEM + m.group(1),
+        text,
+    )
     return text
 
 
