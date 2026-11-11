@@ -65,10 +65,18 @@
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>5010</pagecontrol>
 						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="Continue watching"/>
+							<param name="widget_target" value="videos"/>
+							<param name="list_id" value="5020"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="Action(Info)"/>
+						</include>
+						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_watchlist&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Watchlist"/>
 							<param name="widget_target" value="videos"/>
-							<param name="list_id" value="5020"/>
+							<param name="list_id" value="5025"/>
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
@@ -84,23 +92,39 @@
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=popular&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Popular"/>
 							<param name="widget_target" value="videos"/>
+							<param name="list_id" value="5035"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="Action(Info)"/>
+						</include>
+						<include content="WidgetListPoster">
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=now_playing&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="In cinemas"/>
+							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="5040"/>
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
-						<include content="WidgetListPoster" condition="!Skin.HasSetting(lumen_lite)">
-							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=now_playing&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
-							<param name="widget_header" value="In cinemas"/>
+						<include content="WidgetListPoster">
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=upcoming&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="Coming soon"/>
+							<param name="widget_target" value="videos"/>
+							<param name="list_id" value="5045"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="Action(Info)"/>
+						</include>
+						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_becauseyouwatched&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="Because you watched"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="5050"/>
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
 						<include content="WidgetListPoster" condition="!Skin.HasSetting(lumen_lite)">
-							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=upcoming&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
-							<param name="widget_header" value="Coming soon"/>
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=top_rated&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="Top rated"/>
 							<param name="widget_target" value="videos"/>
-							<param name="list_id" value="5060"/>
+							<param name="list_id" value="5055"/>
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
@@ -167,16 +191,30 @@
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>6010</pagecontrol>
 						<include content="WidgetListEpisodes" condition="Skin.HasSetting(lumen_trakt)">
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="Continue watching"/>
+							<param name="widget_target" value="videos"/>
+							<param name="list_id" value="6020"/>
+						</include>
+						<include content="WidgetListEpisodes" condition="Skin.HasSetting(lumen_trakt)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_nextepisodes&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Up next"/>
 							<param name="widget_target" value="videos"/>
-							<param name="list_id" value="6020"/>
+							<param name="list_id" value="6025"/>
+						</include>
+						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_inprogress&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="Shows in progress"/>
+							<param name="widget_target" value="videos"/>
+							<param name="list_id" value="6030"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="Action(Info)"/>
 						</include>
 						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_watchlist&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Watchlist"/>
 							<param name="widget_target" value="videos"/>
-							<param name="list_id" value="6030"/>
+							<param name="list_id" value="6035"/>
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
@@ -188,19 +226,43 @@
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
-						<include content="WidgetListPoster" condition="!Skin.HasSetting(lumen_lite)">
+						<include content="WidgetListPoster">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=popular&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Popular"/>
+							<param name="widget_target" value="videos"/>
+							<param name="list_id" value="6045"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="Action(Info)"/>
+						</include>
+						<include content="WidgetListPoster">
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=airing_today&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="Airing today"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6050"/>
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
+						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_becauseyouwatched&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="Because you watched"/>
+							<param name="widget_target" value="videos"/>
+							<param name="list_id" value="6055"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="Action(Info)"/>
+						</include>
 						<include content="WidgetListPoster" condition="!Skin.HasSetting(lumen_lite)">
-							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=airing_today&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
-							<param name="widget_header" value="Airing today"/>
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=on_the_air&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="On the air this week"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6060"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="Action(Info)"/>
+						</include>
+						<include content="WidgetListPoster" condition="!Skin.HasSetting(lumen_lite)">
+							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=top_rated&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
+							<param name="widget_header" value="Top rated"/>
+							<param name="widget_target" value="videos"/>
+							<param name="list_id" value="6065"/>
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>

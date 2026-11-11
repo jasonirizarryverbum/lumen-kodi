@@ -16,14 +16,14 @@ from lumen_art import write_logo  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.9"
+VERSION = "0.9.10"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.9"/>
+		<import addon="script.lumen.setup" version="0.9.10"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -103,18 +103,26 @@ def row(kind_include, list_id, header, info, kind, lite_ok=True, extra=""):
 
 
 MOVIE_ROWS = (
-    row("WidgetListPoster", 5020, "Watchlist", "trakt_watchlist", "movie")
+    row("WidgetListPoster", 5020, "Continue watching", "trakt_ondeck", "movie")
+    + row("WidgetListPoster", 5025, "Watchlist", "trakt_watchlist", "movie")
     + row("WidgetListPoster", 5030, "Trending this week", "trending_week", "movie")
-    + row("WidgetListPoster", 5040, "Popular", "popular", "movie")
-    + row("WidgetListPoster", 5050, "In cinemas", "now_playing", "movie", lite_ok=False)
-    + row("WidgetListPoster", 5060, "Coming soon", "upcoming", "movie", lite_ok=False)
+    + row("WidgetListPoster", 5035, "Popular", "popular", "movie")
+    + row("WidgetListPoster", 5040, "In cinemas", "now_playing", "movie")
+    + row("WidgetListPoster", 5045, "Coming soon", "upcoming", "movie")
+    + row("WidgetListPoster", 5050, "Because you watched", "trakt_becauseyouwatched", "movie")
+    + row("WidgetListPoster", 5055, "Top rated", "top_rated", "movie", lite_ok=False)
 )
 TV_ROWS = (
-    row("WidgetListEpisodes", 6020, "Up next", "trakt_nextepisodes", "tv")
-    + row("WidgetListPoster", 6030, "Watchlist", "trakt_watchlist", "tv")
+    row("WidgetListEpisodes", 6020, "Continue watching", "trakt_ondeck", "tv")
+    + row("WidgetListEpisodes", 6025, "Up next", "trakt_nextepisodes", "tv")
+    + row("WidgetListPoster", 6030, "Shows in progress", "trakt_inprogress", "tv")
+    + row("WidgetListPoster", 6035, "Watchlist", "trakt_watchlist", "tv")
     + row("WidgetListPoster", 6040, "Trending this week", "trending_week", "tv")
-    + row("WidgetListPoster", 6050, "Popular", "popular", "tv", lite_ok=False)
-    + row("WidgetListPoster", 6060, "Airing today", "airing_today", "tv", lite_ok=False)
+    + row("WidgetListPoster", 6045, "Popular", "popular", "tv")
+    + row("WidgetListPoster", 6050, "Airing today", "airing_today", "tv")
+    + row("WidgetListPoster", 6055, "Because you watched", "trakt_becauseyouwatched", "tv")
+    + row("WidgetListPoster", 6060, "On the air this week", "on_the_air", "tv", lite_ok=False)
+    + row("WidgetListPoster", 6065, "Top rated", "top_rated", "tv", lite_ok=False)
 )
 
 

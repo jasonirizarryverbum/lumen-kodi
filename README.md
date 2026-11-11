@@ -28,7 +28,7 @@ throws errors on Kodi 21. Lumen ships no streaming add-ons: playback goes to whi
 
 | | Chromecast / 2 GB (Lite) | Projector / 4 GB (Full) |
 |---|---|---|
-| Rows per screen | 3 | 5 |
+| Movie / TV rows (with Trakt connected) | 7 / 8 | 8 / 10 |
 | Fanart behind the home screen | off | on |
 | Cached poster / fanart size | 540 / 720 px | 720 / 1080 px |
 | Video cache | 48 MB | 96 MB |
