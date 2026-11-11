@@ -60,7 +60,7 @@
 					<control type="grouplist" id="5001">
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>5010</pagecontrol>
-						<include content="WidgetListPoster">
+						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_watchlist&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Watchlist"/>
 							<param name="widget_target" value="videos"/>
@@ -152,13 +152,13 @@
 					<control type="grouplist" id="6001">
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>6010</pagecontrol>
-						<include content="WidgetListEpisodes">
+						<include content="WidgetListEpisodes" condition="Skin.HasSetting(lumen_trakt)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_nextepisodes&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Up next"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6020"/>
 						</include>
-						<include content="WidgetListPoster">
+						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_watchlist&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Watchlist"/>
 							<param name="widget_target" value="videos"/>

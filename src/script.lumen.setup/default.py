@@ -6,6 +6,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 import xbmc
+import xbmcaddon
 import xbmcgui
 import xbmcvfs
 
@@ -105,9 +106,39 @@ def need_tmdbh():
     return False
 
 
+def trakt_connected():
+    try:
+        return bool(xbmcaddon.Addon(TMDBH).getSetting("trakt_token"))
+    except Exception:
+        return False
+
+
+def sync_trakt_rows():
+    """Show the Trakt home rows only while TMDb Helper holds a Trakt sign-in."""
+    if xbmc.getSkinDir() != SKIN_ID:
+        return
+    want = trakt_connected()
+    have = bool(xbmc.getCondVisibility("Skin.HasSetting(lumen_trakt)"))
+    if want != have:
+        xbmc.executebuiltin("Skin.SetBool(lumen_trakt)" if want else "Skin.Reset(lumen_trakt)")
+        xbmc.executebuiltin("ReloadSkin()")
+
+
 def connect_trakt():
-    if need_tmdbh():
-        xbmc.executebuiltin("RunScript(%s,authenticate_trakt)" % TMDBH)
+    if not need_tmdbh():
+        return
+    if trakt_connected():
+        sync_trakt_rows()
+        dialog.ok(NAME, "Trakt is already connected. The Watchlist and Up next rows are on.")
+        return
+    xbmc.executebuiltin("RunScript(%s,authenticate_trakt)" % TMDBH)
+    monitor = xbmc.Monitor()
+    for _ in range(100):  # wait up to five minutes for the sign-in to finish
+        if monitor.waitForAbort(3):
+            return
+        if trakt_connected():
+            sync_trakt_rows()
+            return
 
 
 def choose_player(kind):
@@ -199,6 +230,7 @@ def menu():
 
 
 if __name__ == "__main__":
+    sync_trakt_rows()
     if len(sys.argv) > 1 and sys.argv[1] == "firstrun":
         xbmc.sleep(1500)  # let the home screen finish opening
         if dialog.yesno("Welcome to Lumen", "Run the quick setup now? You can open Lumen Setup from Add-ons at any time."):

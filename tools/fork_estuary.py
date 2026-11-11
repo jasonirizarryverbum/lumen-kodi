@@ -13,14 +13,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.0"
+VERSION = "0.9.1"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.0"/>
+		<import addon="script.lumen.setup" version="0.9.1"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -73,7 +73,14 @@ HIDDEN_MENU = ["Music", "MusicVideo", "TV", "Radio", "Games", "Pictures", "Weath
 
 
 def row(kind_include, list_id, header, info, kind, lite_ok=True, extra=""):
-    cond = "" if lite_ok else ' condition="!Skin.HasSetting(lumen_lite)"'
+    # Trakt rows stay hidden until Lumen Setup sees a Trakt sign-in; otherwise
+    # TMDb Helper raises a "401 unauthorised" dialog every time home opens.
+    conds = []
+    if info.startswith("trakt_"):
+        conds.append("Skin.HasSetting(lumen_trakt)")
+    if not lite_ok:
+        conds.append("!Skin.HasSetting(lumen_lite)")
+    cond = f' condition="{" + ".join(conds)}"' if conds else ""
     return (
         f'\t\t\t\t\t\t<include content="{kind_include}"{cond}>\n'
         f'\t\t\t\t\t\t\t<param name="content_path" value="{TMDBH.format(info=info, kind=kind)}"/>\n'

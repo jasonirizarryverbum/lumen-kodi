@@ -17,7 +17,7 @@
 		<summary lang="en_GB">Updates for the Lumen skin and setup tool.</summary>
 		<description lang="en_GB">Hosts the Lumen skin and the Lumen Setup tool. It contains no video add-ons.</description>
 	</extension>
-</addon><addon id="script.lumen.setup" name="Lumen Setup" version="0.9.0" provider-name="Lumen">
+</addon><addon id="script.lumen.setup" name="Lumen Setup" version="0.9.1" provider-name="Lumen">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1" />
 		<import addon="plugin.video.themoviedb.helper" version="5.0.0" />
@@ -35,10 +35,10 @@
 		<summary lang="en_GB">One-stop setup for the Lumen build.</summary>
 		<description lang="en_GB">Applies a performance profile for low-memory devices, connects Trakt through TMDb Helper, picks the default player and adds a NAS share.</description>
 	</extension>
-</addon><addon id="skin.lumen" version="0.9.0" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
+</addon><addon id="skin.lumen" version="0.9.1" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0" />
-		<import addon="script.lumen.setup" version="0.9.0" />
+		<import addon="script.lumen.setup" version="0.9.1" />
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
