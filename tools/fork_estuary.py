@@ -16,14 +16,14 @@ from lumen_art import write_logo  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.6"
+VERSION = "0.9.7"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.6"/>
+		<import addon="script.lumen.setup" version="0.9.7"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -159,7 +159,8 @@ TOUCH_ARROWS = (
 				<label>MENU</label>
 				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
 				<texturenofocus colordiffuse="DD1A1E2B">colors/white.png</texturenofocus>
-				<onclick>SetFocus(9000)</onclick>
+				<onclick>SetProperty(lumen_menu,1,home)</onclick>
+				<onunfocus>ClearProperty(lumen_menu,home)</onunfocus>
 				<visible>!Skin.HasSetting(lumen_keep_menu)</visible>
 			</control>"""
     + _touch_button(1, 130, "PageUp", "true")
@@ -217,7 +218,10 @@ def patch_home(text):
 
     # 5. Auto-hide the side menu while the rows have focus, and let the rows use
     #    the space. Lumen Setup can turn this off (lumen_keep_menu).
-    hide = "ControlGroup(2000).HasFocus + !Skin.HasSetting(lumen_keep_menu)"
+    # lumen_menu is set by the touch MENU button: a tapped button keeps focus,
+    # so on touch screens focus alone cannot bring the menu back.
+    hide = ("ControlGroup(2000).HasFocus + !Skin.HasSetting(lumen_keep_menu)"
+            " + String.IsEmpty(Window(home).Property(lumen_menu))")
 
     def slide(distance, tabs):
         return (

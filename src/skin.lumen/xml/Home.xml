@@ -46,7 +46,7 @@
 			<control type="group" id="2000">
 				<left>462</left>
 				<include condition="!Skin.HasSetting(lumen_keep_menu)">LumenWideRows</include>
-				<animation effect="slide" end="-400,0" time="300" tween="cubic" easing="out" condition="ControlGroup(2000).HasFocus + !Skin.HasSetting(lumen_keep_menu)">Conditional</animation>
+				<animation effect="slide" end="-400,0" time="300" tween="cubic" easing="out" condition="ControlGroup(2000).HasFocus + !Skin.HasSetting(lumen_keep_menu) + String.IsEmpty(Window(home).Property(lumen_menu))">Conditional</animation>
 				<animation type="Conditional" condition="Control.IsVisible(20000)" reversible="false">
 					<effect type="slide" end="0,20" time="60" tween="sine" />
 					<effect type="slide" end="0,-20" time="180" tween="sine" delay="80" />
@@ -929,7 +929,7 @@
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include>OpenClose_Left</include>
-				<animation effect="slide" end="-522,0" time="300" tween="cubic" easing="out" condition="ControlGroup(2000).HasFocus + !Skin.HasSetting(lumen_keep_menu)">Conditional</animation>
+				<animation effect="slide" end="-522,0" time="300" tween="cubic" easing="out" condition="ControlGroup(2000).HasFocus + !Skin.HasSetting(lumen_keep_menu) + String.IsEmpty(Window(home).Property(lumen_menu))">Conditional</animation>
 				<include content="ContentPanel">
 					<param name="width" value="522" />
 				</include>
@@ -1207,7 +1207,7 @@
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 				<top>30</top>
 				<left>90</left>
-				<animation effect="slide" end="-522,0" time="300" tween="cubic" easing="out" condition="ControlGroup(2000).HasFocus + !Skin.HasSetting(lumen_keep_menu)">Conditional</animation>
+				<animation effect="slide" end="-522,0" time="300" tween="cubic" easing="out" condition="ControlGroup(2000).HasFocus + !Skin.HasSetting(lumen_keep_menu) + String.IsEmpty(Window(home).Property(lumen_menu))">Conditional</animation>
 				<control type="image">
 					<left>0</left>
 					<top>-2</top>

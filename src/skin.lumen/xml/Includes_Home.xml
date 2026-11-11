@@ -1092,7 +1092,8 @@
 				<label>MENU</label>
 				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
 				<texturenofocus colordiffuse="DD1A1E2B">colors/white.png</texturenofocus>
-				<onclick>SetFocus(9000)</onclick>
+				<onclick>SetProperty(lumen_menu,1,home)</onclick>
+				<onunfocus>ClearProperty(lumen_menu,home)</onunfocus>
 				<visible>!Skin.HasSetting(lumen_keep_menu)</visible>
 			</control>
 			<control type="button" id="$PARAM[scrollbar_id]1">
