@@ -10,48 +10,19 @@ Output (GitHub Pages serves docs/):
 """
 import hashlib
 import shutil
-import struct
+import sys
 import xml.etree.ElementTree as ET
 import zipfile
-import zlib
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lumen_art import write_icon  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 DOCS = ROOT / "docs"
 ZIPS = DOCS / "repo" / "zips"
 SKIP = {".git", "__pycache__", ".DS_Store", "Thumbs.db"}
-
-
-def make_icon(path, size=256):
-    """Draw the Lumen mark (a glowing coral disc on near-black) without Pillow."""
-    rows = bytearray()
-    c = (size - 1) / 2
-    for y in range(size):
-        rows.append(0)
-        for x in range(size):
-            d = ((x - c) ** 2 + (y - c) ** 2) ** 0.5 / (size / 2)
-            if d < 0.36:
-                r, g, b = 0xF2, 0x6B, 0x70
-            elif d < 0.42:
-                r, g, b = 0xE8, 0x50, 0x5B
-            else:
-                glow = max(0.0, 1 - (d - 0.42) / 0.5) ** 2 * 0.55
-                r = int(0x0B + (0xE8 - 0x0B) * glow)
-                g = int(0x0D + (0x50 - 0x0D) * glow)
-                b = int(0x12 + (0x5B - 0x12) * glow)
-            rows += bytes((r, g, b))
-
-    def chunk(tag, data):
-        body = tag + data
-        return struct.pack(">I", len(data)) + body + struct.pack(">I", zlib.crc32(body))
-
-    png = b"\x89PNG\r\n\x1a\n"
-    png += chunk(b"IHDR", struct.pack(">IIBBBBB", size, size, 8, 2, 0, 0, 0))
-    png += chunk(b"IDAT", zlib.compress(bytes(rows), 9))
-    png += chunk(b"IEND", b"")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(png)
 
 
 def package(addon_dir):
@@ -62,8 +33,7 @@ def package(addon_dir):
         raise SystemExit(f"{addon_dir.name}: folder name must match addon id {addon_id}")
 
     icon_rel = root.findtext(".//assets/icon") or "icon.png"
-    if not (addon_dir / icon_rel).is_file():
-        make_icon(addon_dir / icon_rel)
+    write_icon(addon_dir / icon_rel)
 
     out = ZIPS / addon_id
     out.mkdir(parents=True, exist_ok=True)

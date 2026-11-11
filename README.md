@@ -19,7 +19,7 @@ add-ons: playback goes to whichever TMDb Helper player you install yourself.
 
 1. Kodi > Settings > System > Add-ons > turn on **Unknown sources**.
 2. Settings > File manager > **Add source** > `https://jasonirizarryverbum.github.io/lumen-kodi/` > name it `lumen`.
-3. Settings > Add-ons > **Install from zip file** > `lumen` > `repository.lumen-1.0.0.zip`.
+3. Settings > Add-ons > **Install from zip file** > `lumen` > `repository.lumen-1.0.1.zip`.
 4. **Install from repository** > Lumen Repository > Look and feel > Skin > **Lumen** > Install, and accept the switch.
 5. The setup tool opens the first time the Lumen home screen loads. Pick the device profile, then restart Kodi.
 

@@ -11,16 +11,19 @@ import shutil
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lumen_art import write_logo  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.1"
+VERSION = "0.9.2"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.1"/>
+		<import addon="script.lumen.setup" version="0.9.2"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -150,6 +153,46 @@ def patch_home(text):
     onloads += f'\t<onload condition="{first}">RunScript(script.lumen.setup,firstrun)</onload>\n'
     onloads += f'\t<onload condition="{first}">Skin.SetBool(lumen_firstrun)</onload>\n'
     text = sub_once(r"(<defaultcontrol>9000</defaultcontrol>\n)", lambda m: m.group(1) + onloads, text)
+
+    # 5. Auto-hide the side menu while the rows have focus, and let the rows use
+    #    the space. Lumen Setup can turn this off (lumen_keep_menu).
+    hide = "ControlGroup(2000).HasFocus + !Skin.HasSetting(lumen_keep_menu)"
+
+    def slide(distance, tabs):
+        return (
+            f'{tabs}<animation effect="slide" end="-{distance},0" time="300" tween="cubic" '
+            f'easing="out" condition="{hide}">Conditional</animation>\n'
+        )
+
+    text = sub_once(
+        r'(<control type="group" id="2000">\s*<left>462</left>\n)',
+        lambda m: m.group(1) + "\t\t\t\t<width>1858</width>\n" + slide(400, "\t\t\t\t"),
+        text,
+    )
+    text = sub_once(
+        r"(<depth>DepthContentPanel</depth>\s*<include>OpenClose_Left</include>\n)",
+        lambda m: m.group(1) + slide(522, "\t\t\t\t"),
+        text,
+    )
+
+    # 6. Lumen mark and wordmark in place of the Kodi logo; it hides with the menu.
+    t = "\t\t\t\t"
+    logo = (
+        slide(522, t)
+        + f"{t}<control type=\"image\">\n{t}\t<left>0</left>\n{t}\t<top>-2</top>\n"
+        f"{t}\t<width>60</width>\n{t}\t<height>60</height>\n{t}\t<aspectratio>keep</aspectratio>\n"
+        f"{t}\t<texture>lumen-logo.png</texture>\n{t}</control>\n"
+        f"{t}<control type=\"label\">\n{t}\t<left>80</left>\n{t}\t<top>-2</top>\n"
+        f"{t}\t<width>300</width>\n{t}\t<height>60</height>\n{t}\t<aligny>center</aligny>\n"
+        f"{t}\t<font>font37</font>\n{t}\t<textcolor>white</textcolor>\n"
+        f"{t}\t<label>LUMEN</label>\n{t}</control>\n"
+    )
+    text = sub_once(
+        r'[ \t]*<control type="image">\s*<left>4</left>\s*<top>0</top>\s*<aspectratio>keep</aspectratio>\s*'
+        r"<width>192</width>\s*<height>56</height>\s*<texture>special://xbmc/media/vendor_logo\.png</texture>\s*</control>\n",
+        lambda m: logo,
+        text,
+    )
     return text
 
 
@@ -161,7 +204,6 @@ def main():
         raise SystemExit(f"{src} does not look like skin.estuary")
 
     icon = DEST / "resources" / "icon.png"
-    keep_icon = icon.read_bytes() if icon.is_file() else None
     if DEST.exists():
         shutil.rmtree(DEST)
     shutil.copytree(src, DEST)
@@ -178,10 +220,8 @@ def main():
     (DEST / "colors" / "defaults.xml").write_text(COLORS_XML, encoding="utf-8", newline="\n")
     home = DEST / "xml" / "Home.xml"
     home.write_text(patch_home(home.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
-    if keep_icon:
-        icon.write_bytes(keep_icon)
-    else:
-        icon.unlink(missing_ok=True)  # build_repo.py draws the Lumen icon
+    icon.unlink(missing_ok=True)  # build_repo.py draws the Lumen icon
+    write_logo(DEST / "media" / "lumen-logo.png")
     print(f"wrote {DEST}")
 
 

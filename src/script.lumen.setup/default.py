@@ -201,6 +201,16 @@ def use_skin():
         rpc("Settings.SetSettingValue", setting="lookandfeel.skin", value=SKIN_ID)
 
 
+def toggle_menu():
+    if xbmc.getSkinDir() != SKIN_ID:
+        dialog.ok(NAME, "Switch to the Lumen skin first.")
+        return
+    kept = bool(xbmc.getCondVisibility("Skin.HasSetting(lumen_keep_menu)"))
+    xbmc.executebuiltin("Skin.ToggleSetting(lumen_keep_menu)")
+    dialog.ok(NAME, "The side menu will now hide while you browse the rows." if kept
+              else "The side menu will now stay on screen.")
+
+
 def quick_setup():
     if not apply_profile():
         return
@@ -219,6 +229,7 @@ def menu():
         ("Default player for TV", lambda: choose_player("tv")),
         ("Add a NAS share", add_nas),
         ("Switch to the Lumen skin", use_skin),
+        ("Side menu: auto-hide on/off", toggle_menu),
     ]
     while True:
         choice = dialog.select(NAME, [item[0] for item in items])
