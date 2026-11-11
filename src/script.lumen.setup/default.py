@@ -118,11 +118,21 @@ def trakt_connected():
         return False
 
 
+def trakt_rows_work():
+    """TMDb Helper 5.x (Kodi's official repo) crashes building Trakt rows on
+    Kodi 21.3, popping an error on every home visit. Only 6.x and later work."""
+    try:
+        major = int(xbmcaddon.Addon(TMDBH).getAddonInfo("version").split(".")[0])
+    except Exception:
+        return False
+    return major >= 6
+
+
 def sync_trakt_rows():
     """Show the Trakt home rows only while TMDb Helper holds a Trakt sign-in."""
     if xbmc.getSkinDir() != SKIN_ID:
         return
-    want = trakt_connected()
+    want = trakt_connected() and trakt_rows_work()
     have = bool(xbmc.getCondVisibility("Skin.HasSetting(lumen_trakt)"))
     if want != have:
         xbmc.executebuiltin("Skin.SetBool(lumen_trakt)" if want else "Skin.Reset(lumen_trakt)")
@@ -248,7 +258,9 @@ def menu():
 
 if __name__ == "__main__":
     sync_trakt_rows()
-    if len(sys.argv) > 1 and sys.argv[1] == "firstrun":
+    if len(sys.argv) > 1 and sys.argv[1] == "sync":
+        pass  # the row check above is all this call is for
+    elif len(sys.argv) > 1 and sys.argv[1] == "firstrun":
         xbmc.sleep(1500)  # let the home screen finish opening
         if dialog.yesno("Welcome to Lumen", "Run the quick setup now? You can open Lumen Setup from Add-ons at any time."):
             quick_setup()

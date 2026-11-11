@@ -16,14 +16,14 @@ from lumen_art import write_logo  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.3"
+VERSION = "0.9.4"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.3"/>
+		<import addon="script.lumen.setup" version="0.9.4"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -118,6 +118,41 @@ TV_ROWS = (
 )
 
 
+def _touch_button(suffix, top, action, flip):
+    return f"""
+			<control type="button" id="$PARAM[scrollbar_id]{suffix}">
+				<left>0</left>
+				<top>{top}</top>
+				<width>110</width>
+				<height>110</height>
+				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+				<texturenofocus colordiffuse="DD1A1E2B">colors/white.png</texturenofocus>
+				<onclick>{action}($PARAM[scrollbar_id])</onclick>
+			</control>
+			<control type="image">
+				<left>31</left>
+				<top>{top + 31}</top>
+				<width>48</width>
+				<height>48</height>
+				<aspectratio>keep</aspectratio>
+				<texture flipy="{flip}">overlays/arrowdown.png</texture>
+			</control>"""
+
+
+TOUCH_ARROWS = (
+    """
+		<control type="group">
+			<right>40</right>
+			<bottom>60</bottom>
+			<width>110</width>
+			<height>240</height>"""
+    + _touch_button(1, 0, "PageUp", "true")
+    + _touch_button(2, 130, "PageDown", "false")
+    + """
+		</control>"""
+)
+
+
 def sub_once(pattern, repl, text, flags=0):
     new, n = re.subn(pattern, repl, text, count=1, flags=flags)
     if n != 1:
@@ -159,6 +194,9 @@ def patch_home(text):
     )
     onloads += f'\t<onload condition="{first}">RunScript(script.lumen.setup,firstrun)</onload>\n'
     onloads += f'\t<onload condition="{first}">Skin.SetBool(lumen_firstrun)</onload>\n'
+    # Once per Kodi session, let Lumen Setup re-check whether the Trakt rows can be shown.
+    onloads += '\t<onload condition="String.IsEmpty(Window(home).Property(lumen_synced))">RunScript(script.lumen.setup,sync)</onload>\n'
+    onloads += "\t<onload>SetProperty(lumen_synced,1,home)</onload>\n"
     text = sub_once(r"(<defaultcontrol>9000</defaultcontrol>\n)", lambda m: m.group(1) + onloads, text)
 
     # 5. Auto-hide the side menu while the rows have focus, and let the rows use
@@ -232,15 +270,20 @@ def main():
     home = DEST / "xml" / "Home.xml"
     home.write_text(patch_home(home.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
     inc = DEST / "xml" / "Includes_Home.xml"
-    inc.write_text(
-        sub_once(
-            r"</includes>\s*$",
-            '\t<include name="LumenWideRows">\n\t\t<width>1858</width>\n\t</include>\n</includes>\n',
-            inc.read_text(encoding="utf-8"),
-        ),
-        encoding="utf-8",
-        newline="\n",
+    inc_text = sub_once(
+        r"</includes>\s*$",
+        '\t<include name="LumenWideRows">\n\t\t<width>1858</width>\n\t</include>\n</includes>\n',
+        inc.read_text(encoding="utf-8"),
     )
+    # Touch mode: big up/down buttons beside the scrollbar, because a vertical
+    # swipe that starts on a poster row is swallowed by that row.
+    inc_text = sub_once(
+        r'(<include name="WidgetScrollbar">.*?)(\n\t</include>)',
+        lambda m: m.group(1) + TOUCH_ARROWS + m.group(2),
+        inc_text,
+        flags=re.S,
+    )
+    inc.write_text(inc_text, encoding="utf-8", newline="\n")
     icon.unlink(missing_ok=True)  # build_repo.py draws the Lumen icon
     write_logo(DEST / "media" / "lumen-logo.png")
     print(f"wrote {DEST}")
