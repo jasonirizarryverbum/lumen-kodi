@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="script.lumen.setup" name="Lumen Setup" version="0.9.0" provider-name="Lumen">
+	<requires>
+		<import addon="xbmc.python" version="3.0.1"/>
+		<import addon="plugin.video.themoviedb.helper" version="5.0.0"/>
+	</requires>
+	<extension point="xbmc.python.script" library="default.py">
+		<provides>executable</provides>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<license>GPL-2.0-or-later</license>
+		<source>https://github.com/jasonirizarryverbum/lumen-kodi</source>
+		<assets>
+			<icon>icon.png</icon>
+		</assets>
+		<summary lang="en_GB">One-stop setup for the Lumen build.</summary>
+		<description lang="en_GB">Applies a performance profile for low-memory devices, connects Trakt through TMDb Helper, picks the default player and adds a NAS share.</description>
+	</extension>
+</addon>
