@@ -135,15 +135,17 @@ def trakt_rows_work():
     return major >= 6
 
 
-def use_trakt_provider():
+def use_trakt_provider(force=False):
     """TMDb Helper 6 can sync with several services and asks which one to use
     the first time each Trakt row loads. Answer for it, leaving any choice the
-    user has already made alone."""
+    user has already made alone. "Connect Trakt" passes force=True, which also
+    undoes a "Never" answer: that leaves the watched-history rows empty."""
     try:
         addon = xbmcaddon.Addon(TMDBH)
         for capability in ("watched", "watchlist", "collection", "scrobbling"):
             setting = "sync_provider_" + capability
-            if not addon.getSetting(setting):
+            current = addon.getSetting(setting)
+            if not current or (force and current == "never"):
                 addon.setSetting(setting, "trakt")
     except Exception:
         pass
@@ -166,8 +168,10 @@ def connect_trakt():
     if not need_tmdbh():
         return
     if trakt_connected():
+        use_trakt_provider(force=True)
         sync_trakt_rows()
-        dialog.ok(NAME, "Trakt is already connected. The Watchlist and Up next rows are on.")
+        xbmc.executebuiltin("ReloadSkin()")
+        dialog.ok(NAME, "Trakt is already connected. The Trakt rows are on and use Trakt for watched history.")
         return
     xbmc.executebuiltin("RunScript(%s,authenticate_trakt)" % TMDBH)
     monitor = xbmc.Monitor()
