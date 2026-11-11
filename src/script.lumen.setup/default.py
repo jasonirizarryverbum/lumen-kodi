@@ -14,10 +14,11 @@ NAME = "Lumen Setup"
 SKIN_ID = "skin.lumen"
 TMDBH = "plugin.video.themoviedb.helper"
 
-# label, lite skin mode, poster px, fanart px, video cache MB
+# label, lite skin mode, poster px, fanart px, video cache MB, touch screen
 PROFILES = [
-    ("Chromecast / 2 GB devices (Lite)", True, 540, 720, 48),
-    ("Projector / 4 GB devices (Full)", False, 720, 1080, 96),
+    ("Chromecast / 2 GB devices (Lite)", True, 540, 720, 48, False),
+    ("Projector / 4 GB devices (Full)", False, 720, 1080, 96, False),
+    ("Phone or tablet (touch screen)", False, 720, 1080, 96, True),
 ]
 
 dialog = xbmcgui.Dialog()
@@ -70,7 +71,7 @@ def apply_profile():
     choice = dialog.select("Which device is this?", [p[0] for p in PROFILES])
     if choice < 0:
         return False
-    label, lite, imageres, fanartres, cache_mb = PROFILES[choice]
+    label, lite, imageres, fanartres, cache_mb, touch = PROFILES[choice]
 
     notes = []
     path = userdata("advancedsettings.xml")
@@ -88,6 +89,10 @@ def apply_profile():
 
     if xbmc.getSkinDir() == SKIN_ID:
         xbmc.executebuiltin("Skin.SetBool(lumen_lite)" if lite else "Skin.Reset(lumen_lite)")
+        # Touch screens get the skin's touch mode (scrollbars, back button) and a
+        # pinned menu, because there is no "left" key to bring a hidden menu back.
+        for setting in ("touchmode", "lumen_keep_menu"):
+            xbmc.executebuiltin(("Skin.SetBool(%s)" if touch else "Skin.Reset(%s)") % setting)
         xbmc.executebuiltin("ReloadSkin()")
     else:
         notes.append("Switch to the Lumen skin and run this again to apply the home screen part.")
@@ -207,6 +212,7 @@ def toggle_menu():
         return
     kept = bool(xbmc.getCondVisibility("Skin.HasSetting(lumen_keep_menu)"))
     xbmc.executebuiltin("Skin.ToggleSetting(lumen_keep_menu)")
+    xbmc.executebuiltin("ReloadSkin()")
     dialog.ok(NAME, "The side menu will now hide while you browse the rows." if kept
               else "The side menu will now stay on screen.")
 

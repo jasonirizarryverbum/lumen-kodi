@@ -1075,4 +1075,7 @@
 			</control>
 		</control>
 	</include>
+	<include name="LumenWideRows">
+		<width>1858</width>
+	</include>
 </includes>

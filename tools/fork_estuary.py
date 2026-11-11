@@ -16,14 +16,14 @@ from lumen_art import write_logo  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.2"
+VERSION = "0.9.3"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.2"/>
+		<import addon="script.lumen.setup" version="0.9.3"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -84,6 +84,13 @@ def row(kind_include, list_id, header, info, kind, lite_ok=True, extra=""):
     if not lite_ok:
         conds.append("!Skin.HasSetting(lumen_lite)")
     cond = f' condition="{" + ".join(conds)}"' if conds else ""
+    if kind_include == "WidgetListPoster":
+        # Clicking a poster opens the details page (plot, cast, trailer, play)
+        # instead of starting playback straight away.
+        extra += (
+            '\t\t\t\t\t\t\t<param name="onclick_condition" value="true"/>\n'
+            '\t\t\t\t\t\t\t<param name="onclick_action" value="Action(Info)"/>\n'
+        )
     return (
         f'\t\t\t\t\t\t<include content="{kind_include}"{cond}>\n'
         f'\t\t\t\t\t\t\t<param name="content_path" value="{TMDBH.format(info=info, kind=kind)}"/>\n'
@@ -166,7 +173,11 @@ def patch_home(text):
 
     text = sub_once(
         r'(<control type="group" id="2000">\s*<left>462</left>\n)',
-        lambda m: m.group(1) + "\t\t\t\t<width>1858</width>\n" + slide(400, "\t\t\t\t"),
+        # Rows are only widened when the menu auto-hides; with the menu pinned
+        # (touch screens) they keep the stock width so nothing sits off-screen.
+        lambda m: m.group(1)
+        + '\t\t\t\t<include condition="!Skin.HasSetting(lumen_keep_menu)">LumenWideRows</include>\n'
+        + slide(400, "\t\t\t\t"),
         text,
     )
     text = sub_once(
@@ -220,6 +231,16 @@ def main():
     (DEST / "colors" / "defaults.xml").write_text(COLORS_XML, encoding="utf-8", newline="\n")
     home = DEST / "xml" / "Home.xml"
     home.write_text(patch_home(home.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
+    inc = DEST / "xml" / "Includes_Home.xml"
+    inc.write_text(
+        sub_once(
+            r"</includes>\s*$",
+            '\t<include name="LumenWideRows">\n\t\t<width>1858</width>\n\t</include>\n</includes>\n',
+            inc.read_text(encoding="utf-8"),
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
     icon.unlink(missing_ok=True)  # build_repo.py draws the Lumen icon
     write_logo(DEST / "media" / "lumen-logo.png")
     print(f"wrote {DEST}")
