@@ -16,14 +16,14 @@ from lumen_art import write_logo  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.7"
+VERSION = "0.9.8"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.7"/>
+		<import addon="script.lumen.setup" version="0.9.8"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -262,6 +262,17 @@ def patch_home(text):
         lambda m: logo,
         text,
     )
+    # 7. With no local library, pressing Movies / TV shows moves into the
+    #    streaming rows. Stock Estuary opens the file browser, which is where a
+    #    tap on the menu lands on touch screens.
+    text, n = re.subn(
+        r'(<onclick condition="!Library\.HasContent\((?:movies|tvshows)\)">)'
+        r"ActivateWindow\(Videos,sources://video/,return\)(</onclick>)",
+        r"\1SetFocus(2000)\2",
+        text,
+    )
+    if n != 2:
+        raise SystemExit("patch did not apply: empty-library menu clicks")
     return text
 
 
