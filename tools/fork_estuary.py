@@ -16,14 +16,14 @@ from lumen_art import write_logo  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.4"
+VERSION = "0.9.5"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.4"/>
+		<import addon="script.lumen.setup" version="0.9.5"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -145,9 +145,25 @@ TOUCH_ARROWS = (
 			<right>40</right>
 			<bottom>60</bottom>
 			<width>110</width>
-			<height>240</height>"""
-    + _touch_button(1, 0, "PageUp", "true")
-    + _touch_button(2, 130, "PageDown", "false")
+			<height>370</height>
+			<control type="button" id="$PARAM[scrollbar_id]3">
+				<description>Brings the auto-hidden side menu back on touch screens</description>
+				<left>0</left>
+				<top>0</top>
+				<width>110</width>
+				<height>110</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>0</textoffsetx>
+				<font>font12</font>
+				<label>MENU</label>
+				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+				<texturenofocus colordiffuse="DD1A1E2B">colors/white.png</texturenofocus>
+				<onclick>SetFocus(9000)</onclick>
+				<visible>!Skin.HasSetting(lumen_keep_menu)</visible>
+			</control>"""
+    + _touch_button(1, 130, "PageUp", "true")
+    + _touch_button(2, 260, "PageDown", "false")
     + """
 		</control>"""
 )

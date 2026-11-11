@@ -13,6 +13,7 @@ import xbmcvfs
 NAME = "Lumen Setup"
 SKIN_ID = "skin.lumen"
 TMDBH = "plugin.video.themoviedb.helper"
+TMDBH_TRAKT = "script.module.tmdbhelper.sync.trakt"
 
 # label, lite skin mode, poster px, fanart px, video cache MB, touch screen
 PROFILES = [
@@ -89,10 +90,11 @@ def apply_profile():
 
     if xbmc.getSkinDir() == SKIN_ID:
         xbmc.executebuiltin("Skin.SetBool(lumen_lite)" if lite else "Skin.Reset(lumen_lite)")
-        # Touch screens get the skin's touch mode (scrollbars, back button) and a
-        # pinned menu, because there is no "left" key to bring a hidden menu back.
-        for setting in ("touchmode", "lumen_keep_menu"):
-            xbmc.executebuiltin(("Skin.SetBool(%s)" if touch else "Skin.Reset(%s)") % setting)
+        # Touch screens get the skin's touch mode: scrollbars, a back button and
+        # Lumen's MENU / up / down buttons. The side menu auto-hides on every
+        # profile; "Side menu: auto-hide on/off" pins it.
+        xbmc.executebuiltin("Skin.SetBool(touchmode)" if touch else "Skin.Reset(touchmode)")
+        xbmc.executebuiltin("Skin.Reset(lumen_keep_menu)")
         xbmc.executebuiltin("ReloadSkin()")
     else:
         notes.append("Switch to the Lumen skin and run this again to apply the home screen part.")
@@ -112,10 +114,15 @@ def need_tmdbh():
 
 
 def trakt_connected():
-    try:
-        return bool(xbmcaddon.Addon(TMDBH).getSetting("trakt_token"))
-    except Exception:
-        return False
+    # TMDb Helper 6 keeps the sign-in in its Trakt module; a sign-in made under
+    # 5.x stays in TMDb Helper's own settings until that module first runs.
+    for addon_id, setting in ((TMDBH_TRAKT, "token"), (TMDBH, "trakt_token")):
+        try:
+            if xbmcaddon.Addon(addon_id).getSetting(setting):
+                return True
+        except Exception:
+            pass
+    return False
 
 
 def trakt_rows_work():

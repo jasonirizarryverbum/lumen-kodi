@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="script.lumen.setup" name="Lumen Setup" version="0.9.4" provider-name="Lumen">
+<addon id="script.lumen.setup" name="Lumen Setup" version="0.9.5" provider-name="Lumen">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
-		<import addon="plugin.video.themoviedb.helper" version="5.0.0"/>
+		<import addon="plugin.video.themoviedb.helper" version="6.20.5"/>
+		<import addon="script.module.tmdbhelper.sync.trakt" version="1.2.0"/>
 	</requires>
 	<extension point="xbmc.python.script" library="default.py">
 		<provides>executable</provides>

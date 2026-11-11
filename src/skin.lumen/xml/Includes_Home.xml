@@ -1078,10 +1078,26 @@
 			<right>40</right>
 			<bottom>60</bottom>
 			<width>110</width>
-			<height>240</height>
-			<control type="button" id="$PARAM[scrollbar_id]1">
+			<height>370</height>
+			<control type="button" id="$PARAM[scrollbar_id]3">
+				<description>Brings the auto-hidden side menu back on touch screens</description>
 				<left>0</left>
 				<top>0</top>
+				<width>110</width>
+				<height>110</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>0</textoffsetx>
+				<font>font12</font>
+				<label>MENU</label>
+				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+				<texturenofocus colordiffuse="DD1A1E2B">colors/white.png</texturenofocus>
+				<onclick>SetFocus(9000)</onclick>
+				<visible>!Skin.HasSetting(lumen_keep_menu)</visible>
+			</control>
+			<control type="button" id="$PARAM[scrollbar_id]1">
+				<left>0</left>
+				<top>130</top>
 				<width>110</width>
 				<height>110</height>
 				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
@@ -1090,7 +1106,7 @@
 			</control>
 			<control type="image">
 				<left>31</left>
-				<top>31</top>
+				<top>161</top>
 				<width>48</width>
 				<height>48</height>
 				<aspectratio>keep</aspectratio>
@@ -1098,7 +1114,7 @@
 			</control>
 			<control type="button" id="$PARAM[scrollbar_id]2">
 				<left>0</left>
-				<top>130</top>
+				<top>260</top>
 				<width>110</width>
 				<height>110</height>
 				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
@@ -1107,7 +1123,7 @@
 			</control>
 			<control type="image">
 				<left>31</left>
-				<top>161</top>
+				<top>291</top>
 				<width>48</width>
 				<height>48</height>
 				<aspectratio>keep</aspectratio>

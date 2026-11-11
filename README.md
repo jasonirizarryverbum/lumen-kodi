@@ -12,14 +12,15 @@ It is three small add-ons, not a "build" that overwrites your Kodi:
 | `repository.lumen` | Delivers updates for the two above |
 
 Discovery and tracking come from [TMDb Helper](https://kodi.wiki/view/Add-on:TheMovieDb_Helper),
-installed automatically from the official Kodi repository. Lumen ships no video
-add-ons: playback goes to whichever TMDb Helper player you install yourself.
+installed automatically. The Lumen repository passes through TMDb Helper's own
+repository so you get version 6, because the 5.x in the official Kodi repository
+throws errors on Kodi 21. Lumen ships no streaming add-ons: playback goes to whichever TMDb Helper player you install yourself.
 
 ## Install
 
 1. Kodi > Settings > System > Add-ons > turn on **Unknown sources**.
 2. Settings > File manager > **Add source** > `https://jasonirizarryverbum.github.io/lumen-kodi/` > name it `lumen`.
-3. Settings > Add-ons > **Install from zip file** > `lumen` > `repository.lumen-1.0.1.zip`.
+3. Settings > Add-ons > **Install from zip file** > `lumen` > `repository.lumen-1.0.2.zip`.
 4. **Install from repository** > Lumen Repository > Look and feel > Skin > **Lumen** > Install, and accept the switch.
 5. The setup tool opens the first time the Lumen home screen loads. Pick the device profile, then restart Kodi.
 
