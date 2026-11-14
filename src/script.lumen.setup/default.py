@@ -183,6 +183,26 @@ def connect_trakt():
             return
 
 
+def search():
+    """Search movies and TV shows together through TMDb Helper.
+
+    The last query is kept in a home-window property so the keyboard starts
+    with it. Kodi's video select action is set to "Show information" so a
+    result opens its details page (plot, trailer, Play), the same as a poster
+    on the home rows; TV shows open their seasons either way."""
+    if not need_tmdbh():
+        return
+    home = xbmcgui.Window(10000)
+    query = dialog.input("Search movies and TV shows", home.getProperty("lumen_last_search")).strip()
+    if not query:
+        return
+    home.setProperty("lumen_last_search", query)
+    rpc("Settings.SetSettingValue", setting="myvideos.selectaction", value=3)
+    from urllib.parse import urlencode
+    params = urlencode({"info": "search", "tmdb_type": "both", "query": query, "history": "true"})
+    xbmc.executebuiltin('ActivateWindow(Videos,"plugin://%s/?%s",return)' % (TMDBH, params))
+
+
 def choose_player(kind):
     if not need_tmdbh():
         return
@@ -284,10 +304,14 @@ def menu():
 
 
 if __name__ == "__main__":
-    sync_trakt_rows()
-    if len(sys.argv) > 1 and sys.argv[1] == "sync":
-        pass  # the row check above is all this call is for
-    elif len(sys.argv) > 1 and sys.argv[1] == "firstrun":
+    arg = sys.argv[1] if len(sys.argv) > 1 else ""
+    if arg == "search":
+        search()  # from the side menu and the magnifier icon
+    else:
+        sync_trakt_rows()
+    if arg in ("search", "sync"):
+        pass  # sync: the row check above is all this call is for
+    elif arg == "firstrun":
         xbmc.sleep(1500)  # let the home screen finish opening
         if dialog.yesno("Welcome to Lumen", "Run the quick setup now? You can open Lumen Setup from Add-ons at any time."):
             quick_setup()

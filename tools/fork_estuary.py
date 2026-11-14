@@ -16,14 +16,14 @@ from lumen_art import write_logo  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "src" / "skin.lumen"
-VERSION = "0.9.12"
+VERSION = "0.9.13"
 TMDBH = "plugin://plugin.video.themoviedb.helper/?info={info}&amp;tmdb_type={kind}&amp;widget=true&amp;nextpage=false"
 
 ADDON_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.lumen" version="{VERSION}" name="Lumen" provider-name="Lumen (based on Estuary by phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
-		<import addon="script.lumen.setup" version="0.9.12"/>
+		<import addon="script.lumen.setup" version="0.9.13"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
@@ -246,6 +246,49 @@ APPS_MENU_ITEM = (
 )
 
 
+SEARCH_ACTION = "RunScript(script.lumen.setup,search)"
+
+SEARCH_SECTION = (
+    '\t\t\t\t<control type="group" id="19000">\n'
+    "\t\t\t\t\t<visible>String.IsEqual(Container(9000).ListItem.Property(id),search)</visible>\n"
+    '\t\t\t\t\t<include content="Visible_Right_Delayed">\n'
+    '\t\t\t\t\t\t<param name="id" value="search"/>\n'
+    "\t\t\t\t\t</include>\n"
+    '\t\t\t\t\t<control type="image">\n'
+    "\t\t\t\t\t\t<left>560</left>\n\t\t\t\t\t\t<top>330</top>\n"
+    "\t\t\t\t\t\t<width>140</width>\n\t\t\t\t\t\t<height>140</height>\n"
+    "\t\t\t\t\t\t<aspectratio>keep</aspectratio>\n"
+    '\t\t\t\t\t\t<texture colordiffuse="button_focus">icons/search.png</texture>\n'
+    "\t\t\t\t\t</control>\n"
+    '\t\t\t\t\t<control type="label">\n'
+    "\t\t\t\t\t\t<left>160</left>\n\t\t\t\t\t\t<top>500</top>\n"
+    "\t\t\t\t\t\t<width>940</width>\n\t\t\t\t\t\t<height>60</height>\n"
+    "\t\t\t\t\t\t<align>center</align>\n"
+    "\t\t\t\t\t\t<font>font37</font>\n"
+    "\t\t\t\t\t\t<label>Search movies and TV shows</label>\n"
+    "\t\t\t\t\t</control>\n"
+    '\t\t\t\t\t<control type="label">\n'
+    "\t\t\t\t\t\t<left>160</left>\n\t\t\t\t\t\t<top>570</top>\n"
+    "\t\t\t\t\t\t<width>940</width>\n\t\t\t\t\t\t<height>50</height>\n"
+    "\t\t\t\t\t\t<align>center</align>\n"
+    "\t\t\t\t\t\t<font>font13</font>\n"
+    "\t\t\t\t\t\t<textcolor>grey</textcolor>\n"
+    "\t\t\t\t\t\t<label>Press OK, type a title, then pick a result to see its details.</label>\n"
+    "\t\t\t\t\t</control>\n"
+    "\t\t\t\t</control>\n"
+)
+
+SEARCH_MENU_ITEM = (
+    "\t\t\t\t\t\t<item>\n"
+    "\t\t\t\t\t\t\t<label>Search</label>\n"
+    '\t\t\t\t\t\t\t<property name="menu_id">$NUMBER[19000]</property>\n'
+    f"\t\t\t\t\t\t\t<onclick>{SEARCH_ACTION}</onclick>\n"
+    "\t\t\t\t\t\t\t<thumb>icons/search.png</thumb>\n"
+    '\t\t\t\t\t\t\t<property name="id">search</property>\n'
+    "\t\t\t\t\t\t</item>\n"
+)
+
+
 def sub_once(pattern, repl, text, flags=0):
     new, n = re.subn(pattern, repl, text, count=1, flags=flags)
     if n != 1:
@@ -354,12 +397,20 @@ def patch_home(text):
     #    other streaming apps start from the same home screen.
     text = sub_once(
         r'(\t\t\t\t<control type="group" id="11000">\n)',
-        lambda m: APPS_SECTION + m.group(1),
+        lambda m: APPS_SECTION + SEARCH_SECTION + m.group(1),
+        text,
+    )
+    # 9. "Search" sits above Apps: one keyboard prompt, then movie and TV
+    #    results from TMDb Helper. The magnifier icon does the same; stock
+    #    Estuary's search only looks in a local library, which Lumen rarely has.
+    text = sub_once(
+        r"(\t\t\t\t\t\t<item>\n\t\t\t\t\t\t\t<label>\$LOCALIZE\[24001\]</label>)",
+        lambda m: SEARCH_MENU_ITEM + APPS_MENU_ITEM + m.group(1),
         text,
     )
     text = sub_once(
-        r"(\t\t\t\t\t\t<item>\n\t\t\t\t\t\t\t<label>\$LOCALIZE\[24001\]</label>)",
-        lambda m: APPS_MENU_ITEM + m.group(1),
+        r'(<param name="control_id" value="801" />\s*<param name="onclick" value=")ActivateWindow\(1107\)(" />)',
+        lambda m: m.group(1) + SEARCH_ACTION + m.group(2),
         text,
     )
     return text

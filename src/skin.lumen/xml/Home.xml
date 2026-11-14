@@ -563,6 +563,39 @@
 						<content sortby="label" target="programs">androidapp://sources/apps/</content>
 					</control>
 				</control>
+				<control type="group" id="19000">
+					<visible>String.IsEqual(Container(9000).ListItem.Property(id),search)</visible>
+					<include content="Visible_Right_Delayed">
+						<param name="id" value="search"/>
+					</include>
+					<control type="image">
+						<left>560</left>
+						<top>330</top>
+						<width>140</width>
+						<height>140</height>
+						<aspectratio>keep</aspectratio>
+						<texture colordiffuse="button_focus">icons/search.png</texture>
+					</control>
+					<control type="label">
+						<left>160</left>
+						<top>500</top>
+						<width>940</width>
+						<height>60</height>
+						<align>center</align>
+						<font>font37</font>
+						<label>Search movies and TV shows</label>
+					</control>
+					<control type="label">
+						<left>160</left>
+						<top>570</top>
+						<width>940</width>
+						<height>50</height>
+						<align>center</align>
+						<font>font13</font>
+						<textcolor>grey</textcolor>
+						<label>Press OK, type a title, then pick a result to see its details.</label>
+					</control>
+				</control>
 				<control type="group" id="11000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),video)</visible>
 					<include content="Visible_Right_Delayed">
@@ -1225,6 +1258,13 @@
 							<visible>System.GetBool(gamesgeneral.enable) + !Skin.HasSetting(HomeMenuNoGamesButton)</visible>
 						</item>
 						<item>
+							<label>Search</label>
+							<property name="menu_id">$NUMBER[19000]</property>
+							<onclick>RunScript(script.lumen.setup,search)</onclick>
+							<thumb>icons/search.png</thumb>
+							<property name="id">search</property>
+						</item>
+						<item>
 							<label>Apps</label>
 							<property name="menu_id">$NUMBER[18000]</property>
 							<onclick>SetFocus(18000)</onclick>
@@ -1300,7 +1340,7 @@
 					</include>
 					<include content="IconButton">
 						<param name="control_id" value="801" />
-						<param name="onclick" value="ActivateWindow(1107)" />
+						<param name="onclick" value="RunScript(script.lumen.setup,search)" />
 						<param name="icon" value="icons/search.png" />
 						<param name="label" value="$LOCALIZE[137]" />
 					</include>
