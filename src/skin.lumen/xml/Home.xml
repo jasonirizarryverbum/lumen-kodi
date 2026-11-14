@@ -96,7 +96,7 @@
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
-						<include content="WidgetListPoster">
+						<include content="WidgetListPoster" condition="!Skin.HasSetting(lumen_lite)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=now_playing&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="In cinemas"/>
 							<param name="widget_target" value="videos"/>
@@ -104,7 +104,7 @@
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
-						<include content="WidgetListPoster">
+						<include content="WidgetListPoster" condition="!Skin.HasSetting(lumen_lite)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=upcoming&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Coming soon"/>
 							<param name="widget_target" value="videos"/>
@@ -112,7 +112,7 @@
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
-						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
+						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt) + !Skin.HasSetting(lumen_lite)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_becauseyouwatched&amp;tmdb_type=movie&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Because you watched"/>
 							<param name="widget_target" value="videos"/>
@@ -202,7 +202,7 @@
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6025"/>
 						</include>
-						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
+						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt) + !Skin.HasSetting(lumen_lite)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_inprogress&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Shows in progress"/>
 							<param name="widget_target" value="videos"/>
@@ -242,7 +242,7 @@
 							<param name="onclick_condition" value="true"/>
 							<param name="onclick_action" value="Action(Info)"/>
 						</include>
-						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt)">
+						<include content="WidgetListPoster" condition="Skin.HasSetting(lumen_trakt) + !Skin.HasSetting(lumen_lite)">
 							<param name="content_path" value="plugin://plugin.video.themoviedb.helper/?info=trakt_becauseyouwatched&amp;tmdb_type=tv&amp;widget=true&amp;nextpage=false"/>
 							<param name="widget_header" value="Because you watched"/>
 							<param name="widget_target" value="videos"/>
